@@ -1,0 +1,689 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,iOS basics,device info," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="iOS version1[[UIDevice currentDevice] systemVersion]
+返回一条string, 比如@“8.0” 就代表当前版本是iOS8.0macro:12345#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compar">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常用的判断设备信息的方法和宏">
+<meta property="og:url" content="http://lxian2.space/2015/10/08/常用的判断设备信息的方法和宏/index.html">
+<meta property="og:site_name" content="lxian's Blog">
+<meta property="og:description" content="iOS version1[[UIDevice currentDevice] systemVersion]
+返回一条string, 比如@“8.0” 就代表当前版本是iOS8.0macro:12345#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compar">
+<meta property="og:updated_time" content="2016-12-30T14:44:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="常用的判断设备信息的方法和宏">
+<meta name="twitter:description" content="iOS version1[[UIDevice currentDevice] systemVersion]
+返回一条string, 比如@“8.0” 就代表当前版本是iOS8.0macro:12345#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compar">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lxian2.space/2015/10/08/常用的判断设备信息的方法和宏/"/>
+
+
+
+
+
+  <title> 常用的判断设备信息的方法和宏 | lxian's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-68852515-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">lxian's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://lxian2.space/2015/10/08/常用的判断设备信息的方法和宏/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="lxian2">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/3442641?v=3&s=460">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="lxian's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="lxian's Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                常用的判断设备信息的方法和宏
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-10-08T22:10:00+08:00">
+                2015-10-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/10/08/常用的判断设备信息的方法和宏/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/08/常用的判断设备信息的方法和宏/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="iOS-version"><a href="#iOS-version" class="headerlink" title="iOS version"></a>iOS version</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[[<span class="built_in">UIDevice</span> currentDevice] systemVersion]</div></pre></td></tr></table></figure>
+<p>返回一条string, 比如@“8.0” 就代表当前版本是iOS8.0<br>macro:<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)</span></div><div class="line"><span class="meta">#define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)</span></div><div class="line"><span class="meta">#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)</span></div><div class="line"><span class="meta">#define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)</span></div><div class="line"><span class="meta">#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)</span></div></pre></td></tr></table></figure></p>
+<h4 id="iPhone-or-iPad"><a href="#iPhone-or-iPad" class="headerlink" title="iPhone or iPad"></a>iPhone or iPad</h4><p>这个简单<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#define DEVICE_IS_IPHONE ( UIUserInterfaceIdiomPhone == UI_USER_INTERFACE_IDIOM() )</span></div><div class="line"><span class="meta">#define DEVICE_IS_IPAD ( UIUserInterfaceIdiomPad == UI_USER_INTERFACE_IDIOM())</span></div></pre></td></tr></table></figure></p>
+<h4 id="Device-version"><a href="#Device-version" class="headerlink" title="Device version"></a>Device version</h4><ol>
+<li><p>第一种方法，用model identifier来找。<a href="https://gist.github.com/Jaybles/1323251" target="_blank" rel="external">来源</a>。<a href="https://www.theiphonewiki.com/wiki/Models" target="_blank" rel="external">model identifiler list</a></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">NSString</span> *) platform&#123;</div><div class="line">    size_t size;</div><div class="line">    sysctlbyname(<span class="string">"hw.machine"</span>, <span class="literal">NULL</span>, &amp;size, <span class="literal">NULL</span>, <span class="number">0</span>);</div><div class="line">    <span class="keyword">char</span> *machine = malloc(size);</div><div class="line">    sysctlbyname(<span class="string">"hw.machine"</span>, machine, &amp;size, <span class="literal">NULL</span>, <span class="number">0</span>);</div><div class="line">    <span class="built_in">NSString</span> *platform = [<span class="built_in">NSString</span> stringWithUTF8String:machine];</div><div class="line">    free(machine);</div><div class="line">    <span class="keyword">return</span> platform;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">NSString</span> *) platformString&#123;</div><div class="line">    <span class="built_in">NSString</span> *platform = [<span class="keyword">self</span> platform];</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPhone1,1"</span>])    <span class="keyword">return</span> <span class="string">@"iPhone 1G"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPhone1,2"</span>])    <span class="keyword">return</span> <span class="string">@"iPhone 3G"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPhone2,1"</span>])    <span class="keyword">return</span> <span class="string">@"iPhone 3GS"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPhone3,1"</span>])    <span class="keyword">return</span> <span class="string">@"iPhone 4"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPhone3,3"</span>])    <span class="keyword">return</span> <span class="string">@"Verizon iPhone 4"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPhone4,1"</span>])    <span class="keyword">return</span> <span class="string">@"iPhone 4S"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPod1,1"</span>])      <span class="keyword">return</span> <span class="string">@"iPod Touch 1G"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPod2,1"</span>])      <span class="keyword">return</span> <span class="string">@"iPod Touch 2G"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPod3,1"</span>])      <span class="keyword">return</span> <span class="string">@"iPod Touch 3G"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPod4,1"</span>])      <span class="keyword">return</span> <span class="string">@"iPod Touch 4G"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPad1,1"</span>])      <span class="keyword">return</span> <span class="string">@"iPad"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPad2,1"</span>])      <span class="keyword">return</span> <span class="string">@"iPad 2 (WiFi)"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPad2,2"</span>])      <span class="keyword">return</span> <span class="string">@"iPad 2 (GSM)"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"iPad2,3"</span>])      <span class="keyword">return</span> <span class="string">@"iPad 2 (CDMA)"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"i386"</span>])         <span class="keyword">return</span> <span class="string">@"Simulator"</span>;</div><div class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@"x86_64"</span>])       <span class="keyword">return</span> <span class="string">@"Simulator"</span>;</div><div class="line">    <span class="keyword">return</span> platform;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>第二种方法，用屏幕大小来区分。个人认为这种方法更好，model的种类太多了而且容易写错，而且毕竟检查iPhone版本很多时候也是在适配屏幕，<a href="https://github.com/carlj/CJAMacros/blob/master/CJAMacros/CJAMacros.h" target="_blank" rel="external">代码来源</a></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#define DEVICE_IS_IPHONE_4 DEVICE_SCREEN_HAS_LENGTH([UIScreen mainScreen].bounds, 480.)</span></div><div class="line"><span class="meta">#define DEVICE_IS_IPHONE_5 DEVICE_SCREEN_HAS_LENGTH([UIScreen mainScreen].bounds, 568.)</span></div><div class="line"><span class="meta">#define DEVICE_IS_IPHONE_6 DEVICE_SCREEN_HAS_LENGTH([UIScreen mainScreen].bounds, 667.)</span></div><div class="line"><span class="meta">#define DEVICE_IS_IPHONE_6_PLUS DEVICE_SCREEN_HAS_LENGTH([UIScreen mainScreen].bounds, 736.)</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="App-version"><a href="#App-version" class="headerlink" title="App version"></a>App version</h4><p>app version 和 build version<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSString</span> *appVersion = [[<span class="built_in">NSBundle</span> mainBundle] objectForInfoDictionaryKey:<span class="string">@"CFBundleShortVersionString"</span>];</div><div class="line"><span class="built_in">NSString</span> *buildVersion = [[<span class="built_in">NSBundle</span> mainBundle] objectForInfoDictionaryKey:<span class="string">@"CFBundleVersion"</span>];</div></pre></td></tr></table></figure></p>
+<h4 id="is-Retina"><a href="#is-Retina" class="headerlink" title="is Retina ?"></a>is Retina ?</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#define isRetina ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 960), [[UIScreen mainScreen] currentMode].size) : NO)</span></div></pre></td></tr></table></figure>
+<h4 id="github-上找到的一些macros"><a href="#github-上找到的一些macros" class="headerlink" title="github 上找到的一些macros"></a>github 上找到的一些macros</h4><p><a href="https://github.com/carlj/CJAMacros/blob/master/CJAMacros/CJAMacros.h" target="_blank" rel="external">CJAMacros</a><br><a href="https://github.com/lmirosevic/GBDeviceInfo/tree/master/GBDeviceInfo" target="_blank" rel="external">GBDeviceInfo</a><br><a href="https://gist.github.com/zengyun-programmer/6668088" target="_blank" rel="external">ios macro</a><br><a href="https://gist.github.com/numo16/3407652" target="_blank" rel="external">numo16/Macros.h</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/iOS-basics/" rel="tag"># iOS basics</a>
+          
+            <a href="/tags/device-info/" rel="tag"># device info</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/10/Optional/" rel="prev" title="Swift Optional">
+                Swift Optional <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/10/08/常用的判断设备信息的方法和宏/"
+           data-title="常用的判断设备信息的方法和宏" data-url="http://lxian2.space/2015/10/08/常用的判断设备信息的方法和宏/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/3442641?v=3&s=460"
+               alt="lxian2" />
+          <p class="site-author-name" itemprop="name">lxian2</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#iOS-version"><span class="nav-number">1.</span> <span class="nav-text">iOS version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iPhone-or-iPad"><span class="nav-number">2.</span> <span class="nav-text">iPhone or iPad</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Device-version"><span class="nav-number">3.</span> <span class="nav-text">Device version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#App-version"><span class="nav-number">4.</span> <span class="nav-text">App version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#is-Retina"><span class="nav-number">5.</span> <span class="nav-text">is Retina ?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#github-上找到的一些macros"><span class="nav-number">6.</span> <span class="nav-text">github 上找到的一些macros</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lxian2</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lxian-github-io"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

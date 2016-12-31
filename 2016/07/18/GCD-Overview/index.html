@@ -1,0 +1,713 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,GCD,Objective-C," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="总结下 GCD.
+BasicsCGD 是对线程的抽象。将线程管理交给系统实现，程序员只需要将想执行的任务加入到相应的队列中。
+只有global queue 会被调度运行。当创建自己的queue 的时候，实际上会被set target 到global queue 去，custome queue 将要执行的 block 交给 global queue 执行。(存疑，只在一本书上看到这样的描述)
+Con">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GCD Overview">
+<meta property="og:url" content="http://lxian2.space/2016/07/18/GCD-Overview/index.html">
+<meta property="og:site_name" content="lxian's Blog">
+<meta property="og:description" content="总结下 GCD.
+BasicsCGD 是对线程的抽象。将线程管理交给系统实现，程序员只需要将想执行的任务加入到相应的队列中。
+只有global queue 会被调度运行。当创建自己的queue 的时候，实际上会被set target 到global queue 去，custome queue 将要执行的 block 交给 global queue 执行。(存疑，只在一本书上看到这样的描述)
+Con">
+<meta property="og:updated_time" content="2016-12-31T08:55:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GCD Overview">
+<meta name="twitter:description" content="总结下 GCD.
+BasicsCGD 是对线程的抽象。将线程管理交给系统实现，程序员只需要将想执行的任务加入到相应的队列中。
+只有global queue 会被调度运行。当创建自己的queue 的时候，实际上会被set target 到global queue 去，custome queue 将要执行的 block 交给 global queue 执行。(存疑，只在一本书上看到这样的描述)
+Con">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lxian2.space/2016/07/18/GCD-Overview/"/>
+
+
+
+
+
+  <title> GCD Overview | lxian's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-68852515-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">lxian's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://lxian2.space/2016/07/18/GCD-Overview/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="lxian2">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/3442641?v=3&s=460">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="lxian's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="lxian's Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                GCD Overview
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-18T12:56:55+08:00">
+                2016-07-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/07/18/GCD-Overview/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/18/GCD-Overview/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>总结下 GCD.</p>
+<h4 id="Basics"><a href="#Basics" class="headerlink" title="Basics"></a>Basics</h4><p>CGD 是对线程的抽象。将线程管理交给系统实现，程序员只需要将想执行的任务加入到相应的队列中。</p>
+<p>只有global queue 会被调度运行。当创建自己的queue 的时候，实际上会被set target 到global queue 去，custome queue 将要执行的 block 交给 global queue 执行。(存疑，只在一本书上看到这样的描述)</p>
+<p>Concurrent Disptach Queue 会由系统来决定应当生成的线程数。而 Serial Dispatch Queue 每创建一条都会创建一条新线程。（大量生成 Serial Queue 会消耗大量内存）</p>
+<p>iOS 6.0 之后 GCD 已经加入 ARC, 无需手动释放。</p>
+<h4 id="Set-target"><a href="#Set-target" class="headerlink" title="Set target"></a>Set target</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_set_target(queueA, queueB);</div></pre></td></tr></table></figure>
+<p>queueA 将 block 传给 queueB 执行</p>
+<h4 id="Suspend-amp-Resume"><a href="#Suspend-amp-Resume" class="headerlink" title="Suspend &amp; Resume"></a>Suspend &amp; Resume</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">dispatch_suspend(queue);</div><div class="line">dispatch_resume(queue);</div></pre></td></tr></table></figure>
+<p>queue 被 suspend 之后将停止执行队列中的block. (当前block会继续执行到结束)</p>
+<h4 id="dispatch-barrier-async"><a href="#dispatch-barrier-async" class="headerlink" title="dispatch_barrier_async"></a>dispatch_barrier_async</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">	<span class="comment">// read blocks one</span></div><div class="line">&#125;);</div><div class="line"></div><div class="line">dispatch_barrier_async(queue, ^&#123;</div><div class="line">	<span class="comment">// write block</span></div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">	<span class="comment">// read blocks two</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>dispatch_barrier_async 加入block 之前的 blocks 执行完毕后， 执行 barrier 加入的 block, 完成之后再执行之后加入的 block</p>
+<p>case: read block 用普通的 dispatch_async, write block 用 dispatch_barrier_async。比如一个array，可以用这样的方法来保证其线程安全。</p>
+<h4 id="dispatch-group"><a href="#dispatch-group" class="headerlink" title="dispatch group"></a>dispatch group</h4><p>将几个block group 起来，全部执行完后通知用户<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">dispatch_group_t group = dispatch_group_create();</div><div class="line"></div><div class="line">dispatch_group_async(group, queue, blockA);</div><div class="line">dispatch_group_async(group, queue, blockB);</div><div class="line"></div><div class="line"><span class="comment">// blockC will be executed after blockA and block B finishes</span></div><div class="line">dispatch_group_notify(group, queue, blockC);</div></pre></td></tr></table></figure></p>
+<p>dispatch_group_wait 设置等待时间，到时间直接返回，若为0 则全部完成。设置 DISPATCH_TIME_FOREVER 永远等待，DISPTACH_TIME_NOW 立即返回。<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">long</span> result = dispatch_group_wait(group, time);</div><div class="line"><span class="keyword">if</span> (result == <span class="number">0</span>) &#123;</div><div class="line">	<span class="comment">// all blocks finished executing</span></div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">	<span class="comment">// some blocks are not finished yet</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="dispatch-apply"><a href="#dispatch-apply" class="headerlink" title="dispatch_apply"></a>dispatch_apply</h4><p>dispatch_sync 的复数版本<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// execute the block on queue 10 times, </span></div><div class="line"><span class="comment">// will block current thread until all blocks are finished</span></div><div class="line">dispatch_apply(<span class="number">10</span>, queue, ^(size_t index)&#123;</div><div class="line">	<span class="comment">// index of the executing times</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<h4 id="dispatch-semaphore"><a href="#dispatch-semaphore" class="headerlink" title="dispatch semaphore"></a>dispatch semaphore</h4><p>计数信号<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// create a semphore with initial count of 10</span></div><div class="line">dispatch_semaphore_t semaphore = dispatch_semaphore_create(<span class="number">10</span>);</div><div class="line"></div><div class="line"><span class="comment">// wait for the chance to reduce 1 to the semaphore</span></div><div class="line"><span class="keyword">long</span> result = dispatch_semaphore_wait(semaphore, time);</div><div class="line"></div><div class="line"><span class="comment">// perform some tasks...</span></div><div class="line"></div><div class="line"><span class="comment">// increacse one to semaphore</span></div><div class="line">dispatch_semaphore_signal(semaphore);</div></pre></td></tr></table></figure></p>
+<h4 id="dispatch-once"><a href="#dispatch-once" class="headerlink" title="dispatch_once"></a>dispatch_once</h4><p>略</p>
+<h4 id="dispatch-source"><a href="#dispatch-source" class="headerlink" title="dispatch source"></a>dispatch source</h4><h5 id="dispatch-source-data-add"><a href="#dispatch-source-data-add" class="headerlink" title="dispatch source data add"></a>dispatch source data add</h5><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_DATA_ADD,</div><div class="line">							<span class="number">0</span>, <span class="number">0</span>, queue);</div><div class="line"></div><div class="line"><span class="comment">// add handler to the source 			</span></div><div class="line">__block <span class="keyword">long</span> totalComplete = <span class="number">0</span>;</div><div class="line">dispatch_source_set_event_handler(source, ^&#123;</div><div class="line">	<span class="keyword">long</span> value = dispatch_source_get_data(source);</div><div class="line">	totalComplete += value;</div><div class="line">&#125;)</div><div class="line"></div><div class="line"><span class="comment">// created cource is in suspended status</span></div><div class="line"><span class="comment">// needs to be resumed</span></div><div class="line">dispatch_resume(source);</div><div class="line"></div><div class="line"><span class="comment">// sending data to the source</span></div><div class="line"><span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt;= <span class="number">100</span>; i++) &#123;</div><div class="line">		dispatch_source_merge_data(source, <span class="number">1</span>);</div><div class="line">		usleep(<span class="number">200000</span>);</div><div class="line">	&#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>注意不可发送0 或者 复数</p>
+<h5 id="dispatch-timer"><a href="#dispatch-timer" class="headerlink" title="dispatch timer"></a>dispatch timer</h5><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> dispatch_source_set_timer( dispatch_source_t source, dispatch_time_t start, uint64_t interval, uint64_t leeway);</div></pre></td></tr></table></figure>
+<p>start - start after the start interval<br>interval - execution interval. the handler will be called with after the first execution repeately with the interval. set to DISPATCH_TIME_FOREVER if you want to perform it only once. (use dispatch_after if you want to perform some task after a delay only once)<br>leeway - the time allowed for delay. used a hint to the system<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, <span class="number">0</span>);</div><div class="line">    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, <span class="number">0</span>, <span class="number">0</span>, queue);</div><div class="line">    dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, <span class="number">5</span> * <span class="built_in">NSEC_PER_SEC</span>), <span class="number">1</span> * <span class="built_in">NSEC_PER_SEC</span>, <span class="number">1</span> * <span class="built_in">NSEC_PER_SEC</span>);</div><div class="line">    dispatch_source_set_event_handler(timer, ^&#123;</div><div class="line">        <span class="comment">// perform some tasks</span></div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">// to cancel the timer after 10 seconds</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, <span class="number">0</span>);</div><div class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">10</span> * <span class="built_in">NSEC_PER_SEC</span>)), dispatch_get_main_queue(), ^&#123;</div><div class="line">        dispatch_cancel(timer);</div><div class="line">    &#125;);</div></pre></td></tr></table></figure></p>
+<h5 id="Queue-sepcific-data"><a href="#Queue-sepcific-data" class="headerlink" title="Queue sepcific data"></a>Queue sepcific data</h5><p>Similiar to the Associated Object. Assign a key-value pair to a queue. A release function is required.<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">char</span> key;</div><div class="line"><span class="built_in">CFStringRef</span> *value = <span class="built_in">CFSTR</span>(<span class="string">"some string"</span>);</div><div class="line">dispatch_queue_set_specific(queue,  </div><div class="line">                              &amp;key,  </div><div class="line">                              (<span class="keyword">void</span>*)value,  </div><div class="line">                              (dispatch_function_t)<span class="built_in">CFRelease</span>); </div><div class="line">                              </div><div class="line">   <span class="built_in">CFStringRef</span> *str = dispatch_get_specific(&amp;key);</div></pre></td></tr></table></figure></p>
+<p>如果找不到key, 会向target queue 查询。</p>
+<p>例子<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_set_specific(q, &amp;key, (__bridge <span class="keyword">void</span>*)q, <span class="literal">NULL</span>);</div></pre></td></tr></table></figure></p>
+<p>因为dispatch_get_current_queue 可能会造成死锁，如下，get current queue 检查为当前queue 为queue B, 所以调用 dispatch_sync(queueA, …), 造成死锁（因为最外面还套一个 dispatch_sync(queueA, …)）<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// a 'not' safe sync</span></div><div class="line"><span class="keyword">void</span> dispatch_sync_safe(<span class="built_in">dispatch_queue_t</span> queue, dispatch_block_t block) &#123;</div><div class="line">	<span class="keyword">if</span> (dispatch_get_current_queue() == queue) &#123;</div><div class="line">		block();</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">dispatch_sync</span>(queue, block);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">dispatch_sync</span>(queueA, ^&#123;</div><div class="line">	<span class="built_in">dispatch_sync</span>(queueB, ^&#123;</div><div class="line">		 dispatch_sync_safe(queueA, ^&#123;</div><div class="line">		 	<span class="comment">// some tasks...</span></div><div class="line">		 &#125;)</div><div class="line">	&#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>上面的dispatch_sync_safe 重入，导致deadlock</p>
+<p>解决方法：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> sQueueTagKey;</div><div class="line"></div><div class="line"><span class="keyword">void</span> RNQueueTag(<span class="built_in">dispatch_queue_t</span> q) &#123;</div><div class="line">  <span class="comment">// Make q point to itself by assignment.</span></div><div class="line">  <span class="comment">// This doesn't retain, but it can never dangle.</span></div><div class="line">  dispatch_queue_set_specific(q, &amp;sQueueTagKey, (__bridge <span class="keyword">void</span>*)q, <span class="literal">NULL</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">dispatch_queue_t</span> RNQueueCreateTagged(<span class="keyword">const</span> <span class="keyword">char</span> *label,</div><div class="line">                                     dispatch_queue_attr_t attr) &#123;</div><div class="line">  <span class="built_in">dispatch_queue_t</span> q = dispatch_queue_create(label, attr);</div><div class="line">  RNQueueTag(q);</div><div class="line">  <span class="keyword">return</span> q;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">dispatch_queue_t</span> RNQueueGetCurrentTagged() &#123;</div><div class="line">  <span class="keyword">return</span> (__bridge <span class="built_in">dispatch_queue_t</span>)dispatch_get_specific(&amp;sQueueTagKey);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">BOOL</span> RNQueueCurrentIsTaggedQueue(<span class="built_in">dispatch_queue_t</span> q) &#123;</div><div class="line">  <span class="keyword">return</span> (RNQueueGetCurrentTagged() == q);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">BOOL</span> RNQueueCurrentIsMainQueue() &#123;</div><div class="line">  <span class="keyword">return</span> [<span class="built_in">NSThread</span> isMainThread];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">void</span> RNQueueSafeDispatchSync(<span class="built_in">dispatch_queue_t</span> q, dispatch_block_t block) &#123;</div><div class="line">  <span class="keyword">if</span> (RNQueueCurrentIsTaggedQueue(q)) &#123;</div><div class="line">    block();</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">dispatch_sync</span>(q, block);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面利用Queue sepcific data 会像target queue询问的特性来避免死锁。<br>不过只能应对这种只有两条queue 的情况，而且只能给最外面的queue 加上标签。（所以有啥用啊。。。）</p>
+<h4 id="References"><a href="#References" class="headerlink" title="References"></a>References</h4><ol>
+<li>iOS 7 Programming: Pushing the limit</li>
+<li>Objective-C 高级编程</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/GCD/" rel="tag"># GCD</a>
+          
+            <a href="/tags/Objective-C/" rel="tag"># Objective-C</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/01/23/CALayer-hittest-检索顺序/" rel="next" title="CALayer hittest 遍历顺序">
+                <i class="fa fa-chevron-left"></i> CALayer hittest 遍历顺序
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/18/GCD-Overview/"
+           data-title="GCD Overview" data-url="http://lxian2.space/2016/07/18/GCD-Overview/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/3442641?v=3&s=460"
+               alt="lxian2" />
+          <p class="site-author-name" itemprop="name">lxian2</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Basics"><span class="nav-number">1.</span> <span class="nav-text">Basics</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Set-target"><span class="nav-number">2.</span> <span class="nav-text">Set target</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Suspend-amp-Resume"><span class="nav-number">3.</span> <span class="nav-text">Suspend & Resume</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dispatch-barrier-async"><span class="nav-number">4.</span> <span class="nav-text">dispatch_barrier_async</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dispatch-group"><span class="nav-number">5.</span> <span class="nav-text">dispatch group</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dispatch-apply"><span class="nav-number">6.</span> <span class="nav-text">dispatch_apply</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dispatch-semaphore"><span class="nav-number">7.</span> <span class="nav-text">dispatch semaphore</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dispatch-once"><span class="nav-number">8.</span> <span class="nav-text">dispatch_once</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dispatch-source"><span class="nav-number">9.</span> <span class="nav-text">dispatch source</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#dispatch-source-data-add"><span class="nav-number">9.1.</span> <span class="nav-text">dispatch source data add</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#dispatch-timer"><span class="nav-number">9.2.</span> <span class="nav-text">dispatch timer</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Queue-sepcific-data"><span class="nav-number">9.3.</span> <span class="nav-text">Queue sepcific data</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#References"><span class="nav-number">10.</span> <span class="nav-text">References</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lxian2</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lxian-github-io"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

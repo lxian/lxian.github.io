@@ -1,0 +1,711 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Learning Cocoa with Objective-C 这本书我差不多读了一半，感觉这本书比较像一本参考书，要做某个功能可以参考下了解一下基本的东西。跳过了一些章节，把自己之前不知道的一些东西记一下。
+NSDataNSData contains bytes with no assumptions of the type of data.12//load file into NSDataNS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Learning Cocoa with Objc reading notes">
+<meta property="og:url" content="http://lxian2.space/2015/11/13/learning-cocoa-with-objc-reading-notes/index.html">
+<meta property="og:site_name" content="lxian's Blog">
+<meta property="og:description" content="Learning Cocoa with Objective-C 这本书我差不多读了一半，感觉这本书比较像一本参考书，要做某个功能可以参考下了解一下基本的东西。跳过了一些章节，把自己之前不知道的一些东西记一下。
+NSDataNSData contains bytes with no assumptions of the type of data.12//load file into NSDataNS">
+<meta property="og:updated_time" content="2016-12-30T15:59:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Learning Cocoa with Objc reading notes">
+<meta name="twitter:description" content="Learning Cocoa with Objective-C 这本书我差不多读了一半，感觉这本书比较像一本参考书，要做某个功能可以参考下了解一下基本的东西。跳过了一些章节，把自己之前不知道的一些东西记一下。
+NSDataNSData contains bytes with no assumptions of the type of data.12//load file into NSDataNS">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lxian2.space/2015/11/13/learning-cocoa-with-objc-reading-notes/"/>
+
+
+
+
+
+  <title> Learning Cocoa with Objc reading notes | lxian's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-68852515-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">lxian's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://lxian2.space/2015/11/13/learning-cocoa-with-objc-reading-notes/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="lxian2">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/3442641?v=3&s=460">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="lxian's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="lxian's Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Learning Cocoa with Objc reading notes
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-11-13T23:48:59+08:00">
+                2015-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/11/13/learning-cocoa-with-objc-reading-notes/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/13/learning-cocoa-with-objc-reading-notes/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Learning Cocoa with Objective-C 这本书我差不多读了一半，感觉这本书比较像一本参考书，要做某个功能可以参考下了解一下基本的东西。跳过了一些章节，把自己之前不知道的一些东西记一下。</p>
+<h4 id="NSData"><a href="#NSData" class="headerlink" title="NSData"></a>NSData</h4><p>NSData contains bytes with no assumptions of the type of data.<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//load file into NSData</span></div><div class="line"><span class="built_in">NSData</span> *loadedData = [<span class="built_in">NSData</span> dataWithContentsOfFile:&lt;filePath&gt;];</div></pre></td></tr></table></figure></p>
+<p>NSData itself is useless<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSString</span> *loadedString = [[<span class="built_in">NSString</span> alloc] initWithData:loadedData</div><div class="line">                                        encoding:<span class="built_in">NSUTF8Encoding</span>];</div><div class="line"><span class="comment">//encoding:NSUTF8Encoding tells NSString how to interrprate the bytes in NSData</span></div></pre></td></tr></table></figure></p>
+<h4 id="NSCoding"><a href="#NSCoding" class="headerlink" title="NSCoding"></a>NSCoding</h4><p>Serialization and Deserialization in Cocoa<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// confirming to NSCoding</span></div><div class="line">- (<span class="keyword">void</span>)encodeWithCoder:(<span class="built_in">NSKeyedArchiver</span> *)aCoder&#123;</div><div class="line">    [aCoder encodeObject:&lt;obj&gt; forKey:&lt;key&gt;];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)initWithCoder:(<span class="built_in">NSKeyedArchiver</span> *)aCoder&#123;</div><div class="line">    ...</div><div class="line">    _obj = [aDecoder decodeObjectForKey:&lt;key&gt;]</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Working with NSData<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// store</span></div><div class="line"><span class="built_in">NSData</span> *storedData = [<span class="built_in">NSKeyedArchiver</span> archivedDataWithRootObject:myObject];</div><div class="line">[storedData writeToFile:&lt;filePath&gt; atomically:<span class="literal">YES</span>];</div><div class="line"></div><div class="line"><span class="comment">// retrive</span></div><div class="line">SomeObj *obj = [<span class="built_in">NSKeyedUnarchiver</span> unarchiveObjectWithData:storedData];</div></pre></td></tr></table></figure></p>
+<h4 id="Using-NSBundle-to-find-resources"><a href="#Using-NSBundle-to-find-resources" class="headerlink" title="Using NSBundle to find resources"></a>Using NSBundle to find resources</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSString</span> *path = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"SomeImage"</span> ofType:<span class="string">@"png"</span>];</div></pre></td></tr></table></figure>
+<h4 id="MultiTasking-on-iOS"><a href="#MultiTasking-on-iOS" class="headerlink" title="MultiTasking on iOS"></a>MultiTasking on iOS</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)applicationDidEnterBacktround:(<span class="built_in">UIApplication</span> *)application</div></pre></td></tr></table></figure>
+<p>Any task like saving to disk needs to be performed at this moment. Background app can be killed at anytime and no code can be executed at while being suspended.</p>
+<h4 id="Request-to-run-in-background"><a href="#Request-to-run-in-background" class="headerlink" title="Request to run in background"></a>Request to run in background</h4><p>App can request to run in background for no more 10 mins<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)applicationDidEnterBackground:(<span class="built_in">UIApplication</span> *)application</div><div class="line">&#123;</div><div class="line">    <span class="comment">// beginBackgroundTaskWithExpirationHandler returns a unqie ident for the task</span></div><div class="line">    bgTask = [application beginBackgroundTaskWithExpirationHandler:^&#123;</div><div class="line">        [application endBackgroundTask:bgTask];</div><div class="line">        bgTask = <span class="built_in">UIBackgroundTaskInvalid</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPTACH_QUEU_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        ....bgTasks... </div><div class="line">        [application endBackgroundTask:bgTask];</div><div class="line">        bgTask = <span class="built_in">UIBackgroundTaskInvalid</span>;</div><div class="line">    &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Tasks that can run for a longer time</p>
+<ol>
+<li>playing audio</li>
+<li>tracking location</li>
+<li>VoIP</li>
+</ol>
+<h4 id="Nib"><a href="#Nib" class="headerlink" title="Nib"></a>Nib</h4><p>Nib – “freeze-drying” objects and storing them in a serialized form inside the file.<br>When displaying, loads the nib file, “rehydrates” the stored bojects, and presents them to the user.</p>
+<h4 id="How-Nib-Files-are-Loaded"><a href="#How-Nib-Files-are-Loaded" class="headerlink" title="How Nib Files are Loaded"></a>How Nib Files are Loaded</h4><ol>
+<li>re-create every objects in the nib</li>
+<li>connect evey outlet</li>
+<li>every single object loaded receives awakeFromNib: message</li>
+</ol>
+<h4 id="Blocks"><a href="#Blocks" class="headerlink" title="Blocks"></a>Blocks</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;<span class="keyword">return</span> type&gt;(^ &lt;variable name&gt;) (&lt;params&gt;)</div></pre></td></tr></table></figure>
+<p>Blocks exist in stack when created, thus then assign to like instance variable, the block needs to be copied to the heap.<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">_var = [bomeBlock <span class="keyword">copy</span>];</div></pre></td></tr></table></figure></p>
+<p>Blocks keep strong ref to variables captured.<br>To modify captured variables, add __block modifier.</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">__block <span class="keyword">int</span> i = <span class="number">0</span>;</div></pre></td></tr></table></figure>
+<h4 id="KVC"><a href="#KVC" class="headerlink" title="KVC"></a>KVC</h4><ol>
+<li>accessing key that doesn’t exist causes exception</li>
+<li>is able to access even private vriables<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// determine the varibale to set/get at run time</span></div><div class="line"><span class="keyword">for</span> (<span class="built_in">NSString</span> * key <span class="keyword">in</span> dict) &#123;</div><div class="line">    <span class="built_in">NSObject</span> *value = [dict objectForKey:key];</div><div class="line">    [aProduct setValue:value forKey:key];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="KVO"><a href="#KVO" class="headerlink" title="KVO"></a>KVO</h4><ol>
+<li>synthesized property auto notify changes when setter is called</li>
+<li>overried setter -&gt; needs to fire notifiction manually<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)setName:(<span class="built_in">NSString</span> *)name &#123;</div><div class="line">    [<span class="keyword">self</span> willChangeValueForKey:<span class="string">@"name"</span>];</div><div class="line">    _name = name;</div><div class="line">    [<span class="keyword">self</span> didChangeValueForKey:<span class="string">@"name"</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="NSNotification"><a href="#NSNotification" class="headerlink" title="NSNotification"></a>NSNotification</h4><p>broadcast notifications, typically one singleton notification center. </p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/27/avfoundation-video-capture/" rel="next" title="用Avfoundation 录像">
+                <i class="fa fa-chevron-left"></i> 用Avfoundation 录像
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/15/autolayout-content-size/" rel="prev" title="AutoLayout Content Size">
+                AutoLayout Content Size <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/11/13/learning-cocoa-with-objc-reading-notes/"
+           data-title="Learning Cocoa with Objc reading notes" data-url="http://lxian2.space/2015/11/13/learning-cocoa-with-objc-reading-notes/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/3442641?v=3&s=460"
+               alt="lxian2" />
+          <p class="site-author-name" itemprop="name">lxian2</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#NSData"><span class="nav-number">1.</span> <span class="nav-text">NSData</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSCoding"><span class="nav-number">2.</span> <span class="nav-text">NSCoding</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Using-NSBundle-to-find-resources"><span class="nav-number">3.</span> <span class="nav-text">Using NSBundle to find resources</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MultiTasking-on-iOS"><span class="nav-number">4.</span> <span class="nav-text">MultiTasking on iOS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Request-to-run-in-background"><span class="nav-number">5.</span> <span class="nav-text">Request to run in background</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Nib"><span class="nav-number">6.</span> <span class="nav-text">Nib</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#How-Nib-Files-are-Loaded"><span class="nav-number">7.</span> <span class="nav-text">How Nib Files are Loaded</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Blocks"><span class="nav-number">8.</span> <span class="nav-text">Blocks</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#KVC"><span class="nav-number">9.</span> <span class="nav-text">KVC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#KVO"><span class="nav-number">10.</span> <span class="nav-text">KVO</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSNotification"><span class="nav-number">11.</span> <span class="nav-text">NSNotification</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lxian2</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lxian-github-io"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

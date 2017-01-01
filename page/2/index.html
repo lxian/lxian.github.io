@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,iOS basics,device info," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -84,19 +84,12 @@
 
 
 
-<meta name="description" content="iOS version1[[UIDevice currentDevice] systemVersion]
-返回一条string, 比如@“8.0” 就代表当前版本是iOS8.0macro:12345#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compar">
-<meta property="og:type" content="article">
-<meta property="og:title" content="常用的判断设备信息的方法和宏">
-<meta property="og:url" content="http://lxian2.space/2015/10/08/常用的判断设备信息的方法和宏/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="lxian's Blog">
+<meta property="og:url" content="http://lxian2.space/page/2/index.html">
 <meta property="og:site_name" content="lxian's Blog">
-<meta property="og:description" content="iOS version1[[UIDevice currentDevice] systemVersion]
-返回一条string, 比如@“8.0” 就代表当前版本是iOS8.0macro:12345#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compar">
-<meta property="og:updated_time" content="2016-12-30T14:44:40.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="常用的判断设备信息的方法和宏">
-<meta name="twitter:description" content="iOS version1[[UIDevice currentDevice] systemVersion]
-返回一条string, 比如@“8.0” 就代表当前版本是iOS8.0macro:12345#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compar">
+<meta name="twitter:title" content="lxian's Blog">
 
 
 
@@ -124,13 +117,13 @@
 
 
 
-  <link rel="canonical" href="http://lxian2.space/2015/10/08/常用的判断设备信息的方法和宏/"/>
+  <link rel="canonical" href="http://lxian2.space/page/2/"/>
 
 
 
 
 
-  <title> 常用的判断设备信息的方法和宏 | lxian's Blog </title>
+  <title> lxian's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -160,7 +153,9 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <div class="container one-collumn sidebar-position-left 
+   page-home 
+ ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -241,9 +236,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-expand">
     
+      
 
   
 
@@ -276,7 +271,10 @@
             
             
               
-                常用的判断设备信息的方法和宏
+                
+                <a class="post-title-link" href="/2015/10/08/常用的判断设备信息的方法和宏/" itemprop="url">
+                  常用的判断设备信息的方法和宏
+                </a>
               
             
           </h1>
@@ -337,7 +335,9 @@
       
 
       
-        <h4 id="iOS-version"><a href="#iOS-version" class="headerlink" title="iOS version"></a>iOS version</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[[<span class="built_in">UIDevice</span> currentDevice] systemVersion]</div></pre></td></tr></table></figure>
+        
+          
+            <h4 id="iOS-version"><a href="#iOS-version" class="headerlink" title="iOS version"></a>iOS version</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[[<span class="built_in">UIDevice</span> currentDevice] systemVersion]</div></pre></td></tr></table></figure>
 <p>返回一条string, 比如@“8.0” 就代表当前版本是iOS8.0<br>macro:<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)</span></div><div class="line"><span class="meta">#define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)</span></div><div class="line"><span class="meta">#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)</span></div><div class="line"><span class="meta">#define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)</span></div><div class="line"><span class="meta">#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)</span></div></pre></td></tr></table></figure></p>
 <h4 id="iPhone-or-iPad"><a href="#iPhone-or-iPad" class="headerlink" title="iPhone or iPad"></a>iPhone or iPad</h4><p>这个简单<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#define DEVICE_IS_IPHONE ( UIUserInterfaceIdiomPhone == UI_USER_INTERFACE_IDIOM() )</span></div><div class="line"><span class="meta">#define DEVICE_IS_IPAD ( UIUserInterfaceIdiomPad == UI_USER_INTERFACE_IDIOM())</span></div></pre></td></tr></table></figure></p>
 <h4 id="Device-version"><a href="#Device-version" class="headerlink" title="Device version"></a>Device version</h4><ol>
@@ -352,66 +352,41 @@
 <h4 id="is-Retina"><a href="#is-Retina" class="headerlink" title="is Retina ?"></a>is Retina ?</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#define isRetina ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 960), [[UIScreen mainScreen] currentMode].size) : NO)</span></div></pre></td></tr></table></figure>
 <h4 id="github-上找到的一些macros"><a href="#github-上找到的一些macros" class="headerlink" title="github 上找到的一些macros"></a>github 上找到的一些macros</h4><p><a href="https://github.com/carlj/CJAMacros/blob/master/CJAMacros/CJAMacros.h" target="_blank" rel="external">CJAMacros</a><br><a href="https://github.com/lmirosevic/GBDeviceInfo/tree/master/GBDeviceInfo" target="_blank" rel="external">GBDeviceInfo</a><br><a href="https://gist.github.com/zengyun-programmer/6668088" target="_blank" rel="external">ios macro</a><br><a href="https://gist.github.com/numo16/3407652" target="_blank" rel="external">numo16/Macros.h</a></p>
 
+          
+        
       
     </div>
 
     <div>
       
-        
-
-      
     </div>
 
     <div>
-      
-        
-
       
     </div>
 
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/iOS/" rel="tag"># iOS</a>
-          
-            <a href="/tags/iOS-basics/" rel="tag"># iOS basics</a>
-          
-            <a href="/tags/device-info/" rel="tag"># device info</a>
-          
-        </div>
+
       
 
       
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/10/10/Optional/" rel="prev" title="Swift Optional">
-                Swift Optional <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
       
-
-      
+        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
+    
+  </section>
 
-    <div class="post-spread">
-      
-    </div>
-  </div>
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
 
 
           </div>
@@ -419,14 +394,6 @@
 
 
           
-  <div class="comments" id="comments">
-    
-      <div class="ds-thread" data-thread-key="2015/10/08/常用的判断设备信息的方法和宏/"
-           data-title="常用的判断设备信息的方法和宏" data-url="http://lxian2.space/2015/10/08/常用的判断设备信息的方法和宏/">
-      </div>
-    
-  </div>
-
 
         </div>
         
@@ -446,17 +413,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="https://avatars2.githubusercontent.com/u/3442641?v=3&s=460"
@@ -505,22 +463,6 @@
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#iOS-version"><span class="nav-number">1.</span> <span class="nav-text">iOS version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iPhone-or-iPad"><span class="nav-number">2.</span> <span class="nav-text">iPhone or iPad</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Device-version"><span class="nav-number">3.</span> <span class="nav-text">Device version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#App-version"><span class="nav-number">4.</span> <span class="nav-text">App version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#is-Retina"><span class="nav-number">5.</span> <span class="nav-text">is Retina ?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#github-上找到的一些macros"><span class="nav-number">6.</span> <span class="nav-text">github 上找到的一些macros</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
     </div>
@@ -626,10 +568,6 @@
 
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
-
-
 
   
 
